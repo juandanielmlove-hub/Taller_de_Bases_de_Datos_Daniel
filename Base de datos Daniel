@@ -1,0 +1,5 @@
+CREATE DATABASE IF NOT EXISTS juego_online_Daniel
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+
+USE juego_online_Daniel;
