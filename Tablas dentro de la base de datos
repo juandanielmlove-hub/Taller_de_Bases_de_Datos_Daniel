@@ -1,0 +1,23 @@
+CREATE TABLE Jugadores (
+    id_jugador INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50),
+    nivel INT
+);
+
+CREATE TABLE Juegos (
+    id_juego INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_juego VARCHAR(50),
+    genero VARCHAR(30)
+);
+
+CREATE TABLE Items (
+    id_item INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_item VARCHAR(50),
+    precio DECIMAL(10,2)
+);
+
+CREATE TABLE Partidas (
+    id_partida INT AUTO_INCREMENT PRIMARY KEY,
+    id_jugador INT,
+    id_juego INT
+);
