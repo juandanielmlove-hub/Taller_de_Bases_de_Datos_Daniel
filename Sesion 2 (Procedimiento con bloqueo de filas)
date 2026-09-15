@@ -1,0 +1,31 @@
+-- Sesión 2: Roles de administración — DBA, SA, DA (MySQL 8.0+ / MariaDB 10.5+)
+-- phpMyAdmin: pestaña "Cuentas de usuario" también permite crear estos usuarios
+-- desde una interfaz gráfica; aquí se hace por SQL para que quede documentado.
+
+USE juego_online;
+
+-- DBA: Administrador de la plataforma — control total sobre la base del juego
+DROP USER IF EXISTS 'dba_admin'@'%';
+CREATE USER 'dba_admin'@'%' IDENTIFIED BY 'CambiarEnProduccion123';
+GRANT ALL PRIVILEGES ON juego_online.* TO 'dba_admin'@'%' WITH GRANT OPTION;
+
+-- SA: Soporte Técnico de Infraestructura — gestiona el servidor, no datos de negocio
+DROP USER IF EXISTS 'soporte_sa'@'%';
+CREATE USER 'soporte_sa'@'%' IDENTIFIED BY 'CambiarEnProduccion123';
+GRANT PROCESS, RELOAD, REPLICATION CLIENT ON *.* TO 'soporte_sa'@'%';
+-- Nota: PROCESS/RELOAD/REPLICATION CLIENT dan visibilidad de procesos y estado del
+-- servidor, sin acceso de lectura/escritura a las tablas de negocio.
+
+-- DA: Analista de estadísticas de partidas — solo lectura
+DROP USER IF EXISTS 'analista_da'@'%';
+CREATE USER 'analista_da'@'%' IDENTIFIED BY 'CambiarEnProduccion123';
+GRANT SELECT ON juego_online.Jugadores TO 'analista_da'@'%';
+GRANT SELECT ON juego_online.Partidas  TO 'analista_da'@'%';
+GRANT SELECT ON juego_online.Logros    TO 'analista_da'@'%';
+
+FLUSH PRIVILEGES;
+
+-- Verificación (ejecutar en phpMyAdmin, pestaña SQL, o en la pestaña "Cuentas de usuario")
+-- SHOW GRANTS FOR 'dba_admin'@'%';
+-- SHOW GRANTS FOR 'soporte_sa'@'%';
+-- SHOW GRANTS FOR 'analista_da'@'%';
