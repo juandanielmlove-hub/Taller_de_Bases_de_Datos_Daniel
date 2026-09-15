@@ -1,0 +1,20 @@
+-- Sesión 2: Notas de arquitectura del servidor (ambiente de base de datos)
+-- Motor: MySQL / MariaDB (phpMyAdmin)
+--
+-- MySQL no soporta un equivalente funcional de "COMMENT ON DATABASE" (PostgreSQL),
+-- así que esta decisión se documenta como comentario. Si usas MariaDB 10.5+, puedes
+-- descomentar la línea ALTER DATABASE ... COMMENT para dejarlo guardado en el motor.
+
+USE juego_online;
+
+-- Elección de DBMS: MySQL 8.0 / MariaDB 10.5+ (soporta CHECK constraints y roles,
+-- necesarios en las Sesiones 4 y 2). Administrado vía phpMyAdmin.
+-- Arquitectura: un servidor primario + réplicas de lectura por región (simulado).
+--
+-- Solo en MariaDB 10.5+:
+-- ALTER DATABASE juego_online COMMENT = 'Plataforma de juego online. Arquitectura: primario + réplicas por región (AMERICA, EUROPA). Mantenido por el rol SA.';
+
+-- Parámetros recomendados de servidor (ajustar en my.cnf / my.ini, no vía SQL):
+--   innodb_buffer_pool_size = 25% de la RAM disponible
+--   max_connections = 100 (ajustar según carga esperada en la Sesión 3)
+--   log_bin = ON (necesario para respaldos incrementales, Sesión 6)
