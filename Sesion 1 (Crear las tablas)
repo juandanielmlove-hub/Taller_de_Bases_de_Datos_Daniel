@@ -1,0 +1,147 @@
+-- Aquí se crea la base de datos
+
+CREATE DATABASE IF NOT EXISTS Daniel
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+
+USE Daniel;
+
+-- Luego eliminamos las anteriores tablas que habiamos creado 
+
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS Reservas;
+DROP TABLE IF EXISTS Favoritos;
+DROP TABLE IF EXISTS Peliculas;
+DROP TABLE IF EXISTS Categorias;
+DROP TABLE IF EXISTS Usuarios;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+-- Luego creamos mas tablas
+
+CREATE TABLE Usuarios (
+    usuario_id      INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_usuario  VARCHAR(50) NOT NULL UNIQUE,
+    correo          VARCHAR(100) NOT NULL UNIQUE,
+    edad            INT NOT NULL,
+    ciudad          VARCHAR(50) NOT NULL,
+    fecha_registro  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+CREATE TABLE Categorias (
+    categoria_id    INT AUTO_INCREMENT PRIMARY KEY,
+    nombre          VARCHAR(50) NOT NULL UNIQUE,
+    descripcion     VARCHAR(150)
+) ENGINE=InnoDB;
+
+CREATE TABLE Peliculas (
+    pelicula_id     INT AUTO_INCREMENT PRIMARY KEY,
+    titulo          VARCHAR(100) NOT NULL,
+    director        VARCHAR(80) NOT NULL,
+    anio            INT NOT NULL,
+    duracion_min    INT NOT NULL,
+    categoria_id    INT NOT NULL,
+
+    CONSTRAINT fk_pelicula_categoria
+        FOREIGN KEY (categoria_id)
+        REFERENCES Categorias(categoria_id)
+) ENGINE=InnoDB;
+
+CREATE TABLE Favoritos (
+    favorito_id     INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id      INT NOT NULL,
+    pelicula_id     INT NOT NULL,
+    fecha_agregado  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE KEY uq_usuario_pelicula (usuario_id, pelicula_id),
+
+    CONSTRAINT fk_favorito_usuario
+        FOREIGN KEY (usuario_id)
+        REFERENCES Usuarios(usuario_id),
+
+    CONSTRAINT fk_favorito_pelicula
+        FOREIGN KEY (pelicula_id)
+        REFERENCES Peliculas(pelicula_id)
+) ENGINE=InnoDB;
+
+CREATE TABLE Reservas (
+    reserva_id      INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id      INT NOT NULL,
+    pelicula_id     INT NOT NULL,
+    fecha_reserva   DATE NOT NULL,
+    cantidad        INT NOT NULL DEFAULT 1,
+    estado          VARCHAR(20) NOT NULL DEFAULT 'pendiente',
+
+    CONSTRAINT fk_reserva_usuario
+        FOREIGN KEY (usuario_id)
+        REFERENCES Usuarios(usuario_id),
+
+    CONSTRAINT fk_reserva_pelicula
+        FOREIGN KEY (pelicula_id)
+        REFERENCES Peliculas(pelicula_id)
+) ENGINE=InnoDB;
+
+-- Creamos indices
+
+CREATE INDEX idx_peliculas_categoria
+ON Peliculas(categoria_id);
+
+CREATE INDEX idx_favoritos_usuario
+ON Favoritos(usuario_id);
+
+CREATE INDEX idx_reservas_usuario
+ON Reservas(usuario_id);
+
+-- Luego creamos algunos datos de prueva 
+
+INSERT INTO Usuarios
+(nombre_usuario, correo, edad, ciudad) VALUES
+('DanielPlay', 'daniel@correo.com', 20, 'Arequipa'),
+('AlexGamer', 'alex@correo.com', 22, 'Lima'),
+('MiaStar', 'mia@correo.com', 19, 'Cusco'),
+('LeoTech', 'leo@correo.com', 24, 'Tacna'),
+('SofiaMoon', 'sofia@correo.com', 21, 'Arequipa');
+
+INSERT INTO Categorias
+(nombre, descripcion) VALUES
+('Accion', 'Peliculas con escenas de combate y aventura'),
+('Ciencia Ficcion', 'Historias relacionadas con tecnologia y futuros posibles'),
+('Comedia', 'Peliculas creadas principalmente para entretener y hacer reir'),
+('Terror', 'Historias de suspenso, miedo y situaciones sobrenaturales');
+
+INSERT INTO Peliculas
+(titulo, director, anio, duracion_min, categoria_id) VALUES
+('Guardianes del Tiempo', 'Carlos Vega', 2024, 128, 2),
+('Mision Extrema', 'Luis Torres', 2023, 115, 1),
+('Una Noche Inesperada', 'Marcos Ruiz', 2022, 102, 3),
+('La Casa Oscura', 'Ana Flores', 2024, 110, 4),
+('Viaje a Marte', 'Daniel Castro', 2025, 135, 2);
+
+INSERT INTO Favoritos
+(usuario_id, pelicula_id) VALUES
+(1, 1),
+(1, 2),
+(2, 3),
+(3, 5),
+(4, 2),
+(5, 4);
+
+INSERT INTO Reservas
+(usuario_id, pelicula_id, fecha_reserva, cantidad, estado) VALUES
+(1, 1, '2026-09-20', 2, 'confirmada'),
+(2, 3, '2026-09-21', 1, 'pendiente'),
+(3, 5, '2026-09-22', 3, 'confirmada'),
+(4, 2, '2026-09-23', 1, 'cancelada'),
+(5, 4, '2026-09-24', 2, 'confirmada');
+
+-- Luego creamos algunos datos de prueva 
+
+INSERT INTO Usuarios
+(nombre_usuario, correo, edad, ciudad) VALUES
+('DanielPlay', 'daniel@correo.com', 20, 'Arequipa'),
+('AlexGamer', 'alex@correo.com', 22, 'Lima'),
+('MiaStar', 'mia@correo.com', 19, 'Cusco'),
+('LeoTech', 'leo@correo.com', 24, 'Tacna'),
+('SofiaMoon', 'sofia@correo.com', 21, 'Arequipa');
+
